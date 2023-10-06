@@ -48,6 +48,7 @@ class Ui_MainWindow(object):
         font.setWeight(75)
         self.groupBox.setFont(font)
         self.groupBox.setObjectName("groupBox")
+
         self.label = QtWidgets.QLabel(parent=self.groupBox)
         self.label.setGeometry(QtCore.QRect(40, 50, 151, 41))
         font = QtGui.QFont()
@@ -56,14 +57,25 @@ class Ui_MainWindow(object):
         font.setWeight(50)
         self.label.setFont(font)
         self.label.setObjectName("label")
+
         self.label_2 = QtWidgets.QLabel(parent=self.groupBox)
-        self.label_2.setGeometry(QtCore.QRect(40, 110, 181, 41))
+        self.label_2.setGeometry(QtCore.QRect(40, 85, 181, 41))
         font = QtGui.QFont()
         font.setPointSize(12)
         font.setBold(False)
         font.setWeight(50)
         self.label_2.setFont(font)
         self.label_2.setObjectName("label_2")
+
+        self.label_3 = QtWidgets.QLabel(parent=self.groupBox)
+        self.label_3.setGeometry(QtCore.QRect(40, 130, 151, 41))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        font.setBold(False)
+        font.setWeight(50)
+        self.label_3.setFont(font)
+        self.label_3.setObjectName("label_3")
+
         self.so_bien = QtWidgets.QSpinBox(parent=self.groupBox)
         self.so_bien.setGeometry(QtCore.QRect(270, 50, 41, 31))
         font = QtGui.QFont()
@@ -71,14 +83,16 @@ class Ui_MainWindow(object):
         font.setBold(False)
         font.setWeight(50)
         self.so_bien.setFont(font)
+        self.so_bien.setRange(2, 10)
         self.so_bien.setObjectName("so_bien")
         self.so_rang_buoc = QtWidgets.QSpinBox(parent=self.groupBox)
-        self.so_rang_buoc.setGeometry(QtCore.QRect(270, 110, 41, 31))
+        self.so_rang_buoc.setGeometry(QtCore.QRect(270, 90, 41, 31))
         font = QtGui.QFont()
         font.setPointSize(12)
         font.setBold(False)
         font.setWeight(50)
         self.so_rang_buoc.setFont(font)
+        self.so_rang_buoc.setRange(2, 10)
         self.so_rang_buoc.setObjectName("so_rang_buoc")
         self.datlai = QtWidgets.QPushButton(parent=self.groupBox,clicked=lambda: self.Dat_Lai())
         self.datlai.setGeometry(QtCore.QRect(10, 180, 101, 41))
@@ -151,6 +165,13 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
         self.table_views = []
+
+        self.comboBoxOptimization = QtWidgets.QComboBox(self.groupBox)
+        self.comboBoxOptimization.setGeometry(QtCore.QRect(220, 135, 111, 31))
+        self.comboBoxOptimization.setObjectName("comboBoxOptimization")
+        self.comboBoxOptimization.addItem("max")
+        self.comboBoxOptimization.addItem("min")
+
     def Dat_Lai(self):
         for table_view in self.table_views:
             index = self.tab_widget.indexOf(table_view)
@@ -168,10 +189,8 @@ class Ui_MainWindow(object):
         c = self.table_views[1].get_data()  # Ví dụ: Lấy dữ liệu từ Table C
         b = self.table_views[2].get_data()  # Ví dụ: Lấy dữ liệu từ Table B
 
-        a = input("Nhập đích hàm mục tiêu (max hoặc min):")
-        if a == "min":
-            c = c
-        else:
+        optimization_type = self.comboBoxOptimization.currentText()
+        if optimization_type == "max":
             c *= -1
 
         # Thực hiện giải bài toán tối ưu
@@ -187,7 +206,7 @@ class Ui_MainWindow(object):
         model = QtGui.QStandardItemModel()
         for i, value in enumerate(x):
             item = QtGui.QStandardItem(str(value))
-            model.setItem(i, 0, item)
+            model.setItem(0, i, item)
         self.bien_toi_uu_x.setModel(model)
 
         # Cập nhật giá trị tối ưu vào QLineEdit
@@ -227,7 +246,7 @@ class Ui_MainWindow(object):
         self.groupBox_2.setTitle(_translate("MainWindow", "GIẢI BÀI TOÁN"))
         self.thoat.setText(_translate("MainWindow", "THOÁT"))
         self.giai.setText(_translate("MainWindow", "GIẢI"))
-
+        self.label_3.setText(_translate("MainWindow", "NHẬP ĐÍCH:"))
 
 if __name__ == "__main__":
     import sys

@@ -137,9 +137,9 @@ class Ui_MainWindow(object):
         self.bien_toi_uu_x = QtWidgets.QTableView(parent=self.groupBox_2)
         self.bien_toi_uu_x.setGeometry(QtCore.QRect(0, 30, 191, 91))
         self.bien_toi_uu_x.setObjectName("bien_toi_uu_x")
-        self.gia_tri_toi_uu_z = QtWidgets.QLineEdit(parent=self.groupBox_2)
+        self.gia_tri_toi_uu_z = QtWidgets.QLabel(parent=self.groupBox_2)
         self.gia_tri_toi_uu_z.setGeometry(QtCore.QRect(200, 30, 121, 31))
-        self.gia_tri_toi_uu_z.setClearButtonEnabled(False)
+        # self.gia_tri_toi_uu_z.setClearButtonEnabled(False)
         self.gia_tri_toi_uu_z.setObjectName("gia_tri_toi_uu_z")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(parent=MainWindow)
@@ -185,8 +185,8 @@ class Ui_MainWindow(object):
 
     def giai_bai_toan(self):
         # Lấy dữ liệu từ các QTableView
-        A = self.table_views[0].get_data()  # Ví dụ: Lấy dữ liệu từ Table A
-        c = self.table_views[1].get_data()  # Ví dụ: Lấy dữ liệu từ Table C
+        A = self.table_views[1].get_data()  # Ví dụ: Lấy dữ liệu từ Table A
+        c = self.table_views[0].get_data()  # Ví dụ: Lấy dữ liệu từ Table C
         b = self.table_views[2].get_data()  # Ví dụ: Lấy dữ liệu từ Table B
 
         optimization_type = self.comboBoxOptimization.currentText()
@@ -194,7 +194,10 @@ class Ui_MainWindow(object):
             c *= -1
 
         # Thực hiện giải bài toán tối ưu
-        result = linprog(c, A_ub=A, b_ub=b, bounds=[(0, None)] * len(c), method='highs')
+        try:
+            result = linprog(c, A_ub=A, b_ub=b, bounds=[(0, None)] * len(c), method='highs')
+        except:
+            print("hàm vô nghiệm")
         self.update_table_and_edit(result.x, result.fun)
 
         # In kết quả
@@ -220,15 +223,16 @@ class Ui_MainWindow(object):
 
         self.Dat_Lai()
 
+        table_c = TableView(1, num_columns_c, "Chỉ số hàm mục tiêu c", self.tab_widget)
+        self.tab_widget.addTab(table_c, "Chỉ số hàm mục tiêu c")
+        self.table_views.append(table_c)
+
         # Tạo và thêm TableView A vào TabWidget
         table_a = TableView(num_rows_a, num_columns_a, "Ma Trận A", self.tab_widget)
         self.tab_widget.addTab(table_a, "Ma Trận A")
         self.table_views.append(table_a)
 
         # Tạo và thêm TableView C vào TabWidget
-        table_c = TableView(1, num_columns_c, "Chỉ số hàm mục tiêu c", self.tab_widget)
-        self.tab_widget.addTab(table_c, "Chỉ số hàm mục tiêu c")
-        self.table_views.append(table_c)
 
         # Tạo và thêm TableView B vào TabWidget
         table_b = TableView(num_rows_b, 1, "Vecto b", self.tab_widget)
@@ -255,4 +259,7 @@ if __name__ == "__main__":
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()
-    sys.exit(app.exec())
+    try:
+        sys.exit(app.exec())
+    except:
+        print("exceping")
